@@ -1,0 +1,523 @@
+/* ============================================================
+   NEARDIS — nav.css
+   THEME: Paper & Ink — Airy Helvetica
+   Bottom nav (mobile) · Icon rail (tablet) · Full sidebar (desktop)
+   Top bar (all breakpoints)
+   ============================================================ */
+
+/* ============================================================
+   TOP BAR — all pages
+   ============================================================ */
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--top-bar-h);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-4);
+  z-index: 700;
+}
+
+@media (min-width: 768px) {
+  .top-bar {
+    left: var(--sidebar-icon);
+  }
+}
+
+@media (min-width: 1200px) {
+  .top-bar {
+    left: var(--sidebar-full);
+  }
+}
+
+.top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.top-bar-logo {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  font-size: 1.0625rem;
+  font-weight: var(--font-light);
+  letter-spacing: 0.01em;
+}
+
+.top-bar-logo .logo-near { color: var(--text-primary); }
+.top-bar-logo .logo-dis  { color: var(--accent); font-weight: var(--font-label); }
+
+/* Hide logo on top bar for tablet/desktop — lives in sidebar instead */
+@media (min-width: 768px) {
+  .top-bar-logo {
+    display: none;
+  }
+}
+
+.top-bar-title {
+  font-size: 1rem;
+  font-weight: var(--font-label);
+  color: var(--text-primary);
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Notification bell button */
+.notif-bell-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  transition: all var(--transition);
+}
+
+.notif-bell-btn:hover {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.notif-bell-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--danger);
+  color: #FFFBF2;
+  font-size: 0.625rem;
+  font-weight: var(--font-label);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg-card);
+  line-height: 1;
+}
+
+/* Top bar profile avatar */
+.top-bar-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-avatar);
+  object-fit: cover;
+  background: var(--bg-elevated);
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  transition: border-color var(--transition);
+}
+
+.top-bar-avatar:hover {
+  border-color: var(--accent);
+}
+
+/* ============================================================
+   BOTTOM NAV — mobile only (< 768px)
+   ============================================================ */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--bottom-nav-h);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 700;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+@media (min-width: 768px) {
+  .bottom-nav {
+    display: none;
+  }
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex: 1;
+  height: 100%;
+  color: var(--text-muted);
+  font-size: 0.6875rem;
+  font-weight: var(--font-light);
+  transition: color var(--transition);
+  position: relative;
+}
+
+.bottom-nav-item svg {
+  width: 21px;
+  height: 21px;
+  transition: transform var(--transition);
+  stroke-width: 1.75;
+}
+
+.bottom-nav-item.active {
+  color: var(--accent);
+  font-weight: var(--font-label);
+}
+
+.bottom-nav-item.active svg {
+  transform: translateY(-1px);
+  stroke-width: 2;
+}
+
+.bottom-nav-item:active svg {
+  transform: scale(0.9);
+}
+
+/* Flash nav item — gold treatment */
+.bottom-nav-item.flash-nav {
+  color: var(--flash-gold-deep);
+  opacity: 0.8;
+}
+
+.bottom-nav-item.flash-nav.active {
+  opacity: 1;
+  color: var(--flash-gold-deep);
+}
+
+/* Active indicator dot above icon */
+.bottom-nav-item.active::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.bottom-nav-item.flash-nav.active::before {
+  background: var(--flash-gold-deep);
+}
+
+/* ============================================================
+   ICON RAIL — tablet (768px – 1199px)
+   ============================================================ */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-icon);
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-4) 0;
+  z-index: 750;
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    display: flex;
+  }
+}
+
+/* Sidebar logo (tablet: icon only, desktop: full wordmark) */
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: var(--space-8);
+  color: var(--accent);
+}
+
+.sidebar-logo svg {
+  width: 26px;
+  height: 26px;
+  stroke-width: 1.75;
+}
+
+.sidebar-logo-text {
+  display: none;
+}
+
+/* Nav items */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  flex: 1;
+}
+
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-btn);
+  color: var(--text-secondary);
+  transition: all var(--transition);
+  position: relative;
+}
+
+.sidebar-nav-item svg {
+  stroke-width: 1.75;
+}
+
+.sidebar-nav-item:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.sidebar-nav-item.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.sidebar-nav-item.active svg {
+  stroke-width: 2;
+}
+
+.sidebar-nav-item svg {
+  width: 21px;
+  height: 21px;
+}
+
+/* Flash nav item — gold */
+.sidebar-nav-item.flash-nav {
+  color: var(--flash-gold-deep);
+}
+
+.sidebar-nav-item.flash-nav:hover {
+  background: rgba(212, 160, 23, 0.08);
+  color: var(--flash-gold-deep);
+}
+
+.sidebar-nav-item.flash-nav.active {
+  background: rgba(212, 160, 23, 0.12);
+  color: var(--flash-gold-deep);
+}
+
+/* Tooltip on hover (tablet) */
+.sidebar-tooltip {
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--text-primary);
+  border: 1px solid var(--text-primary);
+  color: var(--bg-primary);
+  font-size: 0.8125rem;
+  font-weight: var(--font-light);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition);
+  box-shadow: var(--shadow-card);
+  z-index: 800;
+}
+
+.sidebar-nav-item:hover .sidebar-tooltip {
+  opacity: 1;
+}
+
+/* Hide tooltips on desktop (labels shown inline instead) */
+@media (min-width: 1200px) {
+  .sidebar-tooltip {
+    display: none;
+  }
+}
+
+/* Sidebar bottom section (notif / avatar / settings) */
+.sidebar-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+.sidebar-bottom .notif-bell-btn,
+.sidebar-bottom .sidebar-nav-item {
+  width: 44px;
+  height: 44px;
+}
+
+.sidebar-bottom-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-avatar);
+  object-fit: cover;
+  background: var(--bg-elevated);
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  transition: border-color var(--transition);
+}
+
+.sidebar-bottom-avatar:hover {
+  border-color: var(--accent);
+}
+
+/* ============================================================
+   FULL SIDEBAR — desktop (1200px+)
+   ============================================================ */
+@media (min-width: 1200px) {
+  .sidebar {
+    width: var(--sidebar-full);
+    align-items: stretch;
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .sidebar-logo {
+    justify-content: flex-start;
+    gap: var(--space-2);
+    padding: 0 var(--space-2);
+    margin-bottom: var(--space-8);
+  }
+
+  .sidebar-logo-text {
+    display: inline-flex;
+    font-size: 1.1875rem;
+    font-weight: var(--font-light);
+    letter-spacing: 0.01em;
+  }
+
+  .sidebar-logo-text .logo-near { color: var(--text-primary); }
+  .sidebar-logo-text .logo-dis  { color: var(--accent); font-weight: var(--font-label); }
+
+  .sidebar-nav-item {
+    width: 100%;
+    justify-content: flex-start;
+    gap: var(--space-3);
+    padding: 0 var(--space-3);
+    font-size: 0.9375rem;
+    font-weight: var(--font-light);
+  }
+
+  .sidebar-nav-item.active {
+    font-weight: var(--font-label);
+  }
+
+  .sidebar-nav-label {
+    display: inline;
+  }
+
+  /* Flash label gets gold text on desktop too */
+  .sidebar-nav-item.flash-nav .sidebar-nav-label {
+    color: var(--flash-gold-deep);
+  }
+
+  /* Bottom section becomes horizontal row */
+  .sidebar-bottom {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-2) 0;
+  }
+
+  .sidebar-bottom-profile {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex: 1;
+    min-width: 0;
+    cursor: pointer;
+  }
+
+  .sidebar-bottom-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .sidebar-bottom-name {
+    font-size: 0.875rem;
+    font-weight: var(--font-label);
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sidebar-bottom-role {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sidebar-bottom-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-bottom .notif-bell-btn,
+  .sidebar-bottom .sidebar-nav-item.icon-only {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Hide labels on tablet (icon rail only shows icons) */
+.sidebar-nav-label {
+  display: none;
+}
+
+/* ============================================================
+   Settings cog (sidebar bottom, icon-only)
+   ============================================================ */
+.sidebar-settings-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.sidebar-settings-btn svg {
+  stroke-width: 1.75;
+}
+
+.sidebar-settings-btn:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.sidebar-settings-btn svg {
+  width: 19px;
+  height: 19px;
+}
+
+/* ============================================================
+   Layout offsets applied to top-bar / bottom-nav siblings
+   handled in global.css via .page-content
+   ============================================================ */
