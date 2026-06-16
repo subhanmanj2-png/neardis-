@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>NearDis — Real deals. Right now. Right here.</title>
+  <meta name="description" content="Discover real deals from verified local businesses near you. Browse an interactive map and a distance-sorted feed of active discounts.">
+  <meta name="theme-color" content="#FAF7F0">
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/assets/icon-192.png">
+
+  <!-- Fonts: Helvetica is a system font on Apple devices; Arial/Helvetica Neue fallback elsewhere -->
+  <!-- Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/feed.css">
+
+  <!-- Firebase (compat SDK for simple multi-file vanilla setup) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js" defer></script>
+</head>
+<body>
+
+  <!-- ============================================================
+       SIDEBAR — tablet icon rail / desktop full sidebar
+       ============================================================ -->
+  <aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-logo" aria-label="NearDis home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11z"/>
+        <circle cx="12" cy="10" r="2.5"/>
+      </svg>
+      <span class="sidebar-logo-text"><span class="logo-near">near</span><span class="logo-dis">dis</span></span>
+    </a>
+
+    <nav class="sidebar-nav" aria-label="Primary navigation">
+      <a href="index.html" class="sidebar-nav-item active" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h3v-6h6v6h3a1 1 0 0 0 1-1V10"/></svg>
+        <span class="sidebar-nav-label">Feed</span>
+        <span class="sidebar-tooltip">Feed</span>
+      </a>
+      <a href="flash.html" class="sidebar-nav-item flash-nav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+        <span class="sidebar-nav-label">Flash</span>
+        <span class="sidebar-tooltip">Flash</span>
+      </a>
+      <a href="map.html" class="sidebar-nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 20l-6-3V4l6 3 6-3 6 3v13l-6-3-6 3z"/><path d="M9 7v13"/><path d="M15 7v13"/></svg>
+        <span class="sidebar-nav-label">Map</span>
+        <span class="sidebar-tooltip">Map</span>
+      </a>
+      <a href="explore.html" class="sidebar-nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <span class="sidebar-nav-label">Explore</span>
+        <span class="sidebar-tooltip">Explore</span>
+      </a>
+      <a href="profile.html" class="sidebar-nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+        <span class="sidebar-nav-label">Profile</span>
+        <span class="sidebar-tooltip">Profile</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-bottom-profile" id="sidebar-profile-trigger">
+        <img src="assets/icons/avatar-placeholder.svg" alt="" class="sidebar-bottom-avatar" id="sidebar-avatar">
+        <div class="sidebar-bottom-info">
+          <span class="sidebar-bottom-name" id="sidebar-user-name">Guest</span>
+          <span class="sidebar-bottom-role" id="sidebar-user-role">Sign in</span>
+        </div>
+      </div>
+      <div class="sidebar-bottom-actions">
+        <button class="notif-bell-btn" id="sidebar-notif-btn" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 4-2 5-2 7h16c0-2-2-3-2-7"/><path d="M9 19a3 3 0 0 0 6 0"/></svg>
+          <span class="notif-bell-badge" id="sidebar-notif-count" hidden>0</span>
+        </button>
+        <button class="sidebar-settings-btn" id="sidebar-settings-btn" aria-label="Settings" onclick="location.href='settings.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       TOP BAR — mobile/tablet/desktop
+       ============================================================ -->
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <a href="index.html" class="top-bar-logo" aria-label="NearDis home">
+        <span class="logo-near">near</span><span class="logo-dis">dis</span>
+      </a>
+    </div>
+    <h1 class="top-bar-title" id="top-bar-title">Nearby deals</h1>
+    <div class="top-bar-right">
+      <button class="notif-bell-btn" id="topbar-notif-btn" onclick="location.href='notifications.html'" aria-label="Notifications">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 4-2 5-2 7h16c0-2-2-3-2-7"/><path d="M9 19a3 3 0 0 0 6 0"/></svg>
+        <span class="notif-bell-badge" id="topbar-notif-count" hidden>0</span>
+      </button>
+      <img src="assets/icons/avatar-placeholder.svg" alt="" class="top-bar-avatar" id="topbar-avatar" onclick="location.href='profile.html'">
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN CONTENT
+       ============================================================ -->
+  <div class="page-content">
+    <div class="feed-page">
+
+      <!-- Desktop: feed column (left) -->
+      <div class="feed-column" id="feed-column">
+
+        <!-- Location permission prompt (shown if geolocation not yet granted) -->
+        <div class="location-prompt hidden" id="location-prompt">
+          <div class="location-prompt-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="30" height="30" aria-hidden="true"><path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          </div>
+          <h2 class="location-prompt-title">Find deals near you</h2>
+          <p class="location-prompt-text">NearDis uses your location to show real deals from businesses close by. We never share your exact location with anyone.</p>
+          <button class="btn btn-primary" id="enable-location-btn">Enable location</button>
+          <div class="location-manual-input hidden" id="location-manual-input">
+            <input type="text" class="form-input" id="manual-location-input" placeholder="Enter your city or area">
+            <button class="btn btn-secondary" id="manual-location-submit">Go</button>
+          </div>
+          <button class="btn btn-ghost btn-sm" id="enter-manually-btn">Enter location manually instead</button>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="feed-filter-bar" id="feed-filter-bar">
+          <div class="feed-radius-row">
+            <span class="text-sm text-secondary" style="white-space:nowrap;">Radius</span>
+            <input type="range" class="range-slider" id="radius-slider" min="1" max="50" value="10" step="1" aria-label="Search radius in kilometers">
+            <span class="feed-radius-value" id="radius-value">10 km</span>
+          </div>
+          <div class="feed-category-row" id="feed-category-row">
+            <button class="chip active" data-category="all">All</button>
+            <button class="chip" data-category="food">Food</button>
+            <button class="chip" data-category="fashion">Fashion</button>
+            <button class="chip" data-category="beauty">Beauty</button>
+            <button class="chip" data-category="electronics">Electronics</button>
+            <button class="chip" data-category="services">Services</button>
+            <button class="chip" data-category="sports">Sports</button>
+            <button class="chip" data-category="home">Home</button>
+            <button class="chip" data-category="other">Other</button>
+          </div>
+        </div>
+
+        <!-- Pull to refresh indicator (mobile) -->
+        <div class="pull-refresh" id="pull-refresh">
+          <div class="spinner"></div>
+        </div>
+
+        <!-- Feed content -->
+        <div class="feed-content">
+
+          <!-- Skeleton loading state -->
+          <div class="feed-skeleton-list" id="feed-skeleton">
+            <div class="skeleton-card">
+              <div class="skeleton-image"></div>
+              <div class="skeleton-body">
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line title long"></div>
+                <div class="skeleton-line medium"></div>
+              </div>
+            </div>
+            <div class="skeleton-card">
+              <div class="skeleton-image"></div>
+              <div class="skeleton-body">
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line title long"></div>
+                <div class="skeleton-line medium"></div>
+              </div>
+            </div>
+            <div class="skeleton-card">
+              <div class="skeleton-image"></div>
+              <div class="skeleton-body">
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line title long"></div>
+                <div class="skeleton-line medium"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Real feed list (populated by feed.js) -->
+          <div class="feed-list hidden" id="feed-list">
+            <!-- Deal cards injected here by js/feed.js -->
+          </div>
+
+          <!-- Empty state -->
+          <div class="empty-state feed-empty hidden" id="feed-empty">
+            <img src="assets/images/empty-feed.svg" alt="" width="140">
+            <h3>No deals nearby yet</h3>
+            <p>Try increasing your search radius or check back soon — new deals are posted daily.</p>
+            <button class="btn btn-secondary btn-sm" id="empty-increase-radius">Increase radius</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Desktop: live map panel (right) -->
+      <div class="feed-map-panel" id="feed-map-panel">
+        <div id="live-map"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       BOTTOM NAV — mobile only
+       ============================================================ -->
+  <nav class="bottom-nav" aria-label="Primary navigation">
+    <a href="index.html" class="bottom-nav-item active" aria-current="page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h3v-6h6v6h3a1 1 0 0 0 1-1V10"/></svg>
+      Feed
+    </a>
+    <a href="flash.html" class="bottom-nav-item flash-nav">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+      Flash
+    </a>
+    <a href="map.html" class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 20l-6-3V4l6 3 6-3 6 3v13l-6-3-6 3z"/><path d="M9 7v13"/><path d="M15 7v13"/></svg>
+      Map
+    </a>
+    <a href="explore.html" class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      Explore
+    </a>
+    <a href="profile.html" class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+      Profile
+    </a>
+  </nav>
+
+  <!-- Toast container -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- Leaflet (map preview on desktop) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+
+  <!-- App scripts -->
+  <script src="js/firebase-config.js" defer></script>
+  <script src="js/utils.js" defer></script>
+  <script src="js/auth.js" defer></script>
+  <script src="js/location.js" defer></script>
+  <script src="js/feed.js" defer></script>
+
+  <!-- Service worker registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
